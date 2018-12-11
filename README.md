@@ -18,7 +18,7 @@ import * as React from 'react'
 import {ScottsAuthenticationRenderProp, AuthHook} from 'scotts_auth_client'
 
 function example() {
-    const {register, login ... } = AuthHook
+    const {register, login ... } = AuthHook("http://exampe.com/graphql")
 }
 
 class Example extends React.Component {
