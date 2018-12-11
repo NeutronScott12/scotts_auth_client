@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { print } from 'graphql';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 import {
 	LOGIN,
@@ -19,21 +19,57 @@ import {
 	ResetPasswordMutationArgs,
 	ForgotPasswordMutationArgs,
 	ChangePasswordMutationArgs,
-	AuthConfirmationMutationArgs
+	AuthConfirmationMutationArgs,
+	RegisterResponse,
+	LoginResponse,
+	CheckTokenResponse,
+	AuthConfirmationResponse,
+	ResetPasswordResponse,
+	ForgotPasswordResponse,
+	ChangePasswordResponse
 } from '../../graphql/types';
 
 export type Props = {
 	text: string;
-	children: () => {};
-	server_url: string;
+	children: (
+		data: {
+			register: (
+				{ username, password, email }: RegisterMutationArgs
+			) => Promise<AxiosResponse<RegisterResponse>>;
+			login: (
+				{ email, password }: LoginMutationArgs
+			) => Promise<AxiosResponse<LoginResponse>>;
+			checkToken: (
+				{ token }: CheckTokenMutationArgs
+			) => Promise<AxiosResponse<CheckTokenResponse>>;
+			authConfirmation: (
+				{ token }: AuthConfirmationMutationArgs
+			) => Promise<AxiosResponse<AuthConfirmationResponse>>;
+			resetPassword: (
+				{ id, password }: ResetPasswordMutationArgs
+			) => Promise<AxiosResponse<ResetPasswordResponse>>;
+			forgotPassword: (
+				{ email }: ForgotPasswordMutationArgs
+			) => Promise<AxiosResponse<ForgotPasswordResponse>>;
+			changePassword: (
+				{ email, newPassword, oldPassword }: ChangePasswordMutationArgs
+			) => Promise<AxiosResponse<ChangePasswordResponse>>;
+			logout: () => Promise<AxiosResponse<any>>;
+		}
+	) => JSX.Element | null;
+	serverUrl: string;
 };
 
 export default class ScottsAuthenticationRenderProp extends React.Component<
 	Props
 > {
-	server_url = this.props.server_url;
+	server_url = this.props.serverUrl;
 
-	register = async ({ username, password, email }: RegisterMutationArgs) => {
+	register = async ({
+		username,
+		password,
+		email
+	}: RegisterMutationArgs): Promise<AxiosResponse<RegisterResponse>> => {
 		return await axios.post(
 			this.server_url,
 			{
@@ -147,6 +183,15 @@ export default class ScottsAuthenticationRenderProp extends React.Component<
 	};
 
 	render() {
-		return this.props.children();
+		return this.props.children({
+			register: this.register,
+			login: this.login,
+			logout: this.logout,
+			authConfirmation: this.authConfirmation,
+			changePassword: this.changePassword,
+			resetPassword: this.resetPassword,
+			forgotPassword: this.forgotPassword,
+			checkToken: this.checkToken
+		});
 	}
 }

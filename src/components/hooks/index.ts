@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { print } from 'graphql';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 import {
 	LOGIN,
@@ -19,7 +19,14 @@ import {
 	ResetPasswordMutationArgs,
 	ForgotPasswordMutationArgs,
 	ChangePasswordMutationArgs,
-	AuthConfirmationMutationArgs
+	AuthConfirmationMutationArgs,
+	RegisterResponse,
+	LoginResponse,
+	CheckTokenResponse,
+	AuthConfirmationResponse,
+	ResetPasswordResponse,
+	ForgotPasswordResponse,
+	ChangePasswordResponse
 } from '../../graphql/types';
 
 export default function AuthHook(server_url: string) {
@@ -29,7 +36,7 @@ export default function AuthHook(server_url: string) {
 		username,
 		password,
 		email
-	}: RegisterMutationArgs) => {
+	}: RegisterMutationArgs): Promise<AxiosResponse<RegisterResponse>> => {
 		return await axios.post(
 			server_path,
 			{
@@ -44,7 +51,11 @@ export default function AuthHook(server_url: string) {
 		);
 	};
 
-	const login = async ({ email, password, tokens }: LoginMutationArgs) => {
+	const login = async ({
+		email,
+		password,
+		tokens
+	}: LoginMutationArgs): Promise<AxiosResponse<LoginResponse>> => {
 		return await axios.post(
 			server_path,
 			{
@@ -59,7 +70,9 @@ export default function AuthHook(server_url: string) {
 		);
 	};
 
-	const checkToken = async ({ token }: CheckTokenMutationArgs) => {
+	const checkToken = async ({
+		token
+	}: CheckTokenMutationArgs): Promise<AxiosResponse<CheckTokenResponse>> => {
 		return await axios.post(
 			server_path,
 			{
@@ -74,7 +87,9 @@ export default function AuthHook(server_url: string) {
 
 	const authConfirmation = async ({
 		token
-	}: AuthConfirmationMutationArgs) => {
+	}: AuthConfirmationMutationArgs): Promise<
+		AxiosResponse<AuthConfirmationResponse>
+	> => {
 		return await axios.post(
 			server_path,
 			{
@@ -90,7 +105,9 @@ export default function AuthHook(server_url: string) {
 	const resetPassword = async ({
 		id,
 		password
-	}: ResetPasswordMutationArgs) => {
+	}: ResetPasswordMutationArgs): Promise<
+		AxiosResponse<ResetPasswordResponse>
+	> => {
 		return await axios.post(
 			server_path,
 			{
@@ -104,7 +121,11 @@ export default function AuthHook(server_url: string) {
 		);
 	};
 
-	const forgotPassword = async ({ email }: ForgotPasswordMutationArgs) => {
+	const forgotPassword = async ({
+		email
+	}: ForgotPasswordMutationArgs): Promise<
+		AxiosResponse<ForgotPasswordResponse>
+	> => {
 		return await axios.post(
 			server_path,
 			{
@@ -121,7 +142,9 @@ export default function AuthHook(server_url: string) {
 		email,
 		oldPassword,
 		newPassword
-	}: ChangePasswordMutationArgs) => {
+	}: ChangePasswordMutationArgs): Promise<
+		AxiosResponse<ChangePasswordResponse>
+	> => {
 		return await axios.post(
 			server_path,
 			{
@@ -136,7 +159,7 @@ export default function AuthHook(server_url: string) {
 		);
 	};
 
-	const logout = async () => {
+	const logout = async (): Promise<AxiosResponse<any>> => {
 		return await axios.post(
 			server_path,
 			{

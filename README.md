@@ -15,12 +15,20 @@ npm install --save scotts_auth_client
 ```tsx
 import * as React from 'react'
 
-import MyComponent from 'scotts_auth_client'
+import {ScottsAuthenticationRenderProp, AuthHook} from 'scotts_auth_client'
+
+function example() {
+    const {register, login ... } = AuthHook
+}
 
 class Example extends React.Component {
   render () {
     return (
-      <MyComponent />
+      <ScottsAuthenticationRenderProp serverUrl="http://example.com/graphql">
+        {({register, login}) => (
+            whatever
+        )}
+      </ScottsAuthenticationRenderProp>
     )
   }
 }
